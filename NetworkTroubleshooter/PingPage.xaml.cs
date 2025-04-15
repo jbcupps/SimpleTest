@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
@@ -24,9 +25,8 @@ public partial class PingPage : ContentPage
 	{
 		if (_pingCts != null) // Ping is running, so stop it
 		{
-			StatusLabel.Text = "Stopping ping...";
+			SetStatusAsync("Stopping ping..."); // Use async helper
 			_pingCts.Cancel();
-			// UI will be reset in the finally block of the task
 		}
 		else // Start ping
 		{
@@ -65,22 +65,23 @@ public partial class PingPage : ContentPage
 
 	private async Task ExecutePingAsync(string hostname, int pingCount, int timeout, CancellationToken cancellationToken)
 	{
-		var resultsBuilder = new StringBuilder();
 		var roundTripTimes = new List<long>();
 		int packetsSent = 0;
 		int packetsReceived = 0;
 
 		try
 		{
+			// Resolve hostname once before starting
+			string targetIp = ResolveHostname(hostname);
+			await AppendResultAsync($"Pinging {hostname} [{targetIp}] with {pingCount} requests:\n");
+
 			using (var pingSender = new Ping())
 			{
-				 await AppendResultAsync($"Pinging {hostname} [{ResolveHostname(hostname)}] with {pingCount} requests:\n");
-
 				for (int i = 0; i < pingCount; i++)
 				{
 					if (cancellationToken.IsCancellationRequested)
 					{
-						await AppendResultAsync("\nPing operation cancelled.");
+						await AppendResultAsync("\nPing operation cancelled by user.");
 						break;
 					}
 
@@ -89,26 +90,33 @@ public partial class PingPage : ContentPage
 					string resultLine;
 					try
 					{
-						reply = await pingSender.SendPingAsync(hostname, timeout);
+						reply = await pingSender.SendPingAsync(hostname, timeout); // Use original hostname/IP input
+						
 						if (reply.Status == IPStatus.Success)
-						{ 
+						{
 							packetsReceived++;
 							roundTripTimes.Add(reply.RoundtripTime);
 							resultLine = $"Reply from {reply.Address}: bytes={reply.Buffer?.Length} time={reply.RoundtripTime}ms TTL={reply.Options?.Ttl}";
 						}
 						else
-						{ 
-							 resultLine = $"Request failed: {reply.Status}";
+						{
+							resultLine = $"Request failed: {reply.Status}";
 						}
+					}
+					catch (PingException pex) when (pex.InnerException is SocketException sex && sex.SocketErrorCode == SocketError.HostNotFound)
+					{
+						 resultLine = $"Ping Error: Could not resolve host '{hostname}'.";
+						 await AppendResultAsync(resultLine);
+						 break; // Stop if host cannot be resolved
 					}
 					catch (PingException pex)
 					{
 						resultLine = $"Ping Error: {pex.InnerException?.Message ?? pex.Message}";
 					}
-					 catch (SocketException sox)
-					 {
-						 resultLine = $"Socket Error: {sox.Message}";
-					 }
+					catch (SocketException sox) // Should be caught by PingException mostly, but just in case
+					{
+						resultLine = $"Socket Error: {sox.Message}";
+					}
 					catch (Exception ex) // Catch other potential exceptions from SendPingAsync
 					{
 						resultLine = $"Error during ping: {ex.Message}";
@@ -116,13 +124,109 @@ public partial class PingPage : ContentPage
 
 					await AppendResultAsync(resultLine);
 
-					if (i < pingCount - 1) // Avoid delay after last ping
+					// Optional delay between pings, consider cancellation
+					if (i < pingCount - 1)
 					{
-						 await Task.Delay(500, cancellationToken); // Delay between pings
+						try
+						{
+							await Task.Delay(500, cancellationToken); 
+						}
+						catch (TaskCanceledException) 
+						{
+							 await AppendResultAsync("\nPing operation cancelled during delay.");
+							 break; 
+						}
 					}
 				}
 			}
 
-			// Calculate and Display Summary
-			await AppendResultAsync("\nPing statistics:");
+			// Calculate and Display Summary (only if not cancelled early)
+			if (!cancellationToken.IsCancellationRequested)
+			{
+				await AppendResultAsync("\nPing statistics:");
+				double loss = packetsSent > 0 ? (double)(packetsSent - packetsReceived) / packetsSent * 100 : 0;
+				await AppendResultAsync($"  Packets: Sent = {packetsSent}, Received = {packetsReceived}, Lost = {packetsSent - packetsReceived} ({loss:F1}% loss)");
+
+				if (roundTripTimes.Any())
+				{
+					await AppendResultAsync("Approximate round trip times in milli-seconds:");
+					await AppendResultAsync($"  Minimum = {roundTripTimes.Min()}ms, Maximum = {roundTripTimes.Max()}ms, Average = {roundTripTimes.Average():F0}ms");
+				}
+			}
+		}
+		catch (TaskCanceledException) // Catch cancellation during initial setup/resolve
+		{
+			await SetStatusAsync("Ping operation cancelled.");
+		}
+		catch (Exception ex)
+		{
+			// Handle exceptions occurring outside the loop (e.g., Ping initialization, initial DNS resolution)
+			await SetStatusAsync($"An error occurred: {ex.Message}");
+		}
+		finally
+		{
+			// Always reset UI state on the main thread
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				SetUiState(isPinging: false);
+				_pingCts?.Dispose();
+				_pingCts = null; // Signal that ping is no longer running
+			});
+		}
+	}
+
+	private string ResolveHostname(string hostname)
+	{
+		try
+		{
+			// Attempt to resolve first available address 
+			IPAddress[] addresses = Dns.GetHostAddresses(hostname);
+			return addresses.FirstOrDefault()?.ToString() ?? hostname; // Return first resolved or original
+		}
+		catch { return hostname; } // Return original hostname if resolution fails
+	}
+
+	private Task AppendResultAsync(string text)
+	{
+		return MainThread.InvokeOnMainThreadAsync(() =>
+		{
+			ResultsEditor.Text += text + Environment.NewLine;
+		});
+	}
+
+	private Task SetStatusAsync(string text)
+	{
+		return MainThread.InvokeOnMainThreadAsync(() =>
+		{
+			StatusLabel.Text = text;
+		});
+	}
+
+	private void SetUiState(bool isPinging)
+	{
+		HostnameEntry.IsEnabled = !isPinging;
+		PingCountEntry.IsEnabled = !isPinging;
+		TimeoutEntry.IsEnabled = !isPinging;
+		LoadingIndicator.IsVisible = isPinging;
+		LoadingIndicator.IsRunning = isPinging;
+		PingButton.Text = isPinging ? "Stop Ping" : "Start Ping";
+		if (!isPinging)
+		{
+			// Only clear status label if it wasn't an error/cancellation message set by ExecutePingAsync
+			if (!StatusLabel.Text.StartsWith("Stopping") && !StatusLabel.Text.StartsWith("Ping error") && !StatusLabel.Text.StartsWith("An error"))
+			{
+				 StatusLabel.Text = string.Empty; 
+			}
+		}
+	}
+
+	protected override void OnDisappearing()
+	{
+		base.OnDisappearing();
+		if (_pingCts != null)
+		{
+			_pingCts.Cancel(); // Cancel any ongoing ping when leaving the page
+			// UI cleanup happens in the finally block of ExecutePingAsync
+		}
+	}
 } 

@@ -9,14 +9,22 @@
             FontSize="Large" 
             HorizontalOptions="Center" />
 
-        <!-- Input controls will go here -->
+        <Entry x:Name="HostnameEntry" Placeholder="Enter Hostname or IP" />
+        <Entry x:Name="PortsEntry" Placeholder="Ports (e.g., 80, 443, 20-25)" />
+        
+        <HorizontalStackLayout Spacing="10">
+            <Label Text="Timeout (ms):" VerticalOptions="Center"/>
+            <Entry x:Name="TimeoutEntry" Text="2000" Keyboard="Numeric" WidthRequest="70"/>
+        </HorizontalStackLayout>
 
-        <Button Text="Start Scan" />
+        <Button x:Name="ScanButton" Text="Start Scan" Clicked="OnScanClicked" />
 
-        <ActivityIndicator IsRunning="False" />
+        <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" />
 
-        <ScrollView>
-            <Label Text="Results will appear here..." />
+        <Label x:Name="StatusLabel" Text="" TextColor="Red" />
+
+        <ScrollView VerticalOptions="FillAndExpand">
+             <Editor x:Name="ResultsEditor" IsReadOnly="True" VerticalOptions="FillAndExpand" MinHeightRequest="300"/>
         </ScrollView>
         
     </VerticalStackLayout>

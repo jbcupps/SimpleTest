@@ -9,14 +9,16 @@
             FontSize="Large" 
             HorizontalOptions="Center" />
 
-        <!-- Input controls will go here -->
+        <Entry x:Name="UrlEntry" Placeholder="Enter full URL (e.g., https://www.google.com)" Keyboard="Url"/>
+        
+        <Button x:Name="CheckButton" Text="Perform Check" Clicked="OnCheckClicked" />
 
-        <Button Text="Perform Check" />
+        <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" />
 
-        <ActivityIndicator IsRunning="False" />
+        <Label x:Name="StatusLabel" Text="" TextColor="Red" />
 
-        <ScrollView>
-            <Label Text="Results will appear here..." />
+        <ScrollView VerticalOptions="FillAndExpand">
+             <Editor x:Name="ResultsEditor" IsReadOnly="True" VerticalOptions="FillAndExpand" MinHeightRequest="200"/>
         </ScrollView>
         
     </VerticalStackLayout>

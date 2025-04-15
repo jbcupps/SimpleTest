@@ -9,14 +9,23 @@
             FontSize="Large" 
             HorizontalOptions="Center" />
 
-        <!-- Input controls will go here -->
+        <Entry x:Name="HostnameEntry" Placeholder="Enter Hostname or IP" />
+        
+        <HorizontalStackLayout Spacing="10">
+            <Label Text="Max Hops:" VerticalOptions="Center"/>
+            <Entry x:Name="MaxHopsEntry" Text="30" Keyboard="Numeric" WidthRequest="50"/>
+            <Label Text="Timeout (ms):" VerticalOptions="Center"/>
+            <Entry x:Name="TimeoutEntry" Text="1000" Keyboard="Numeric" WidthRequest="70"/>
+        </HorizontalStackLayout>
 
-        <Button Text="Start Traceroute" />
+        <Button x:Name="TracerouteButton" Text="Start Traceroute" Clicked="OnTracerouteClicked" />
 
-        <ActivityIndicator IsRunning="False" />
+        <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" />
 
-        <ScrollView>
-            <Label Text="Results will appear here..." />
+        <Label x:Name="StatusLabel" Text="" TextColor="Red" />
+
+        <ScrollView VerticalOptions="FillAndExpand">
+             <Editor x:Name="ResultsEditor" IsReadOnly="True" VerticalOptions="FillAndExpand" MinHeightRequest="300" FontFamily="Monospace"/>
         </ScrollView>
         
     </VerticalStackLayout>

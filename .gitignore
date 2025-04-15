@@ -1,0 +1,9 @@
+# Ignore the Context directory containing sensitive info, docs, prompts
+/Context/
+
+# Standard .NET MAUI/VS ignores
+[Bb]in/
+[Oo]bj/
+.vs/
+*.user
+*.suo 
