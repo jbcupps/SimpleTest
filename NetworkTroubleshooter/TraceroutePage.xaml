@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="NetworkTroubleshooter.TraceroutePage"
+             Title="Traceroute Utility">
+    <VerticalStackLayout Padding="20" Spacing="10">
+        <Label 
+            Text="Traceroute Utility"
+            FontSize="Large" 
+            HorizontalOptions="Center" />
+
+        <!-- Input controls will go here -->
+
+        <Button Text="Start Traceroute" />
+
+        <ActivityIndicator IsRunning="False" />
+
+        <ScrollView>
+            <Label Text="Results will appear here..." />
+        </ScrollView>
+        
+    </VerticalStackLayout>
+</ContentPage> 

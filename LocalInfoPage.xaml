@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="NetworkTroubleshooter.LocalInfoPage"
+             Title="Local Network Info">
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="10"
+            Padding="20"
+            x:Name="ResultsStackLayout">
+            
+            <Label 
+                Text="Local Network Information"
+                FontSize="Large"
+                HorizontalOptions="Center" />
+            
+            <ActivityIndicator x:Name="LoadingIndicator" IsRunning="True" />
+            
+            <!-- Network Interface details will be added here dynamically -->
+            
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage> 

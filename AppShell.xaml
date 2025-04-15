@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="NetworkTroubleshooter.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:NetworkTroubleshooter"
+    Shell.FlyoutBehavior="Disabled"
+    Title="NetworkTroubleshooter">
+
+    <TabBar>
+        <ShellContent
+            Title="Local Info"
+            ContentTemplate="{DataTemplate local:LocalInfoPage}"
+            Route="LocalInfoPage" />
+
+        <ShellContent
+            Title="DNS Lookup"
+            ContentTemplate="{DataTemplate local:MainPage}" 
+            Route="DnsLookupPage" />
+            
+        <ShellContent
+            Title="Ping"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="PingPage" />
+
+        <ShellContent
+            Title="Traceroute"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="TraceroutePage" />
+
+        <ShellContent
+            Title="Port Scan"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="PortScanPage" />
+            
+        <ShellContent
+            Title="HTTP Check"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="HttpCheckPage" />
+    </TabBar>
+
+</Shell> 

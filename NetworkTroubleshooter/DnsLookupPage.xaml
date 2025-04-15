@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="NetworkTroubleshooter.DnsLookupPage"
+             xmlns:dns="clr-namespace:ARSoft.Tools.Net.Dns;assembly=ARSoft.Tools.Net"
+             Title="DNS Lookup">
+    <VerticalStackLayout Padding="20" Spacing="10">
+        <Label 
+            Text="DNS Lookup"
+            FontSize="Large" 
+            HorizontalOptions="Center" />
+
+        <Entry x:Name="HostnameEntry" Placeholder="Enter Hostname or IP" />
+        
+        <Picker x:Name="RecordTypePicker" Title="Select Record Type">
+            <Picker.ItemsSource>
+                <!-- Use x:Static to reference enum members -->
+                <x:Array Type="{x:Type dns:RecordType}">
+                    <dns:RecordType>A</dns:RecordType>
+                    <dns:RecordType>Aaaa</dns:RecordType> <!-- Note: ARSoft uses Aaaa -->
+                    <dns:RecordType>Mx</dns:RecordType>
+                    <dns:RecordType>Ns</dns:RecordType>
+                    <dns:RecordType>CName</dns:RecordType>
+                    <dns:RecordType>Ptr</dns:RecordType>
+                    <dns:RecordType>Soa</dns:RecordType>
+                    <dns:RecordType>Txt</dns:RecordType>
+                </x:Array>
+            </Picker.ItemsSource>
+        </Picker>
+
+        <Entry x:Name="DnsServerEntry" Placeholder="Optional: DNS Server IP" Keyboard="Numeric"/>
+        
+        <Button x:Name="LookupButton" Text="Perform Lookup" Clicked="OnLookupClicked" />
+        
+        <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" />
+        
+        <Label x:Name="StatusLabel" Text="" TextColor="Red" />
+
+        <ScrollView VerticalOptions="FillAndExpand">
+            <Editor x:Name="ResultsEditor" IsReadOnly="True" VerticalOptions="FillAndExpand" MinHeightRequest="200"/>
+        </ScrollView>
+        
+    </VerticalStackLayout>
+</ContentPage> 

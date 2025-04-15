@@ -1,0 +1,254 @@
+{
+  "format": 1,
+  "restore": {
+    "E:\\repo\\SimpleTest\\NetworkTroubleshooter\\NetworkTroubleshooter.csproj": {}
+  },
+  "projects": {
+    "E:\\repo\\SimpleTest\\NetworkTroubleshooter\\NetworkTroubleshooter.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\repo\\SimpleTest\\NetworkTroubleshooter\\NetworkTroubleshooter.csproj",
+        "projectName": "NetworkTroubleshooter",
+        "projectPath": "E:\\repo\\SimpleTest\\NetworkTroubleshooter\\NetworkTroubleshooter.csproj",
+        "packagesPath": "C:\\Users\\jbcup\\.nuget\\packages\\",
+        "outputPath": "E:\\repo\\SimpleTest\\NetworkTroubleshooter\\obj\\",
+        "projectStyle": "PackageReference",
+        "crossTargeting": true,
+        "configFilePaths": [
+          "C:\\Users\\jbcup\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0-android",
+          "net9.0-ios",
+          "net9.0-maccatalyst",
+          "net9.0-windows10.0.19041.0"
+        ],
+        "sources": {
+          "E:\\repo\\dotnet-sdk-9.0.203-win-x64\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0-android35.0": {
+            "targetAlias": "net9.0-android",
+            "projectReferences": {}
+          },
+          "net9.0-ios18.4": {
+            "targetAlias": "net9.0-ios",
+            "projectReferences": {}
+          },
+          "net9.0-maccatalyst18.4": {
+            "targetAlias": "net9.0-maccatalyst",
+            "projectReferences": {}
+          },
+          "net9.0-windows10.0.19041": {
+            "targetAlias": "net9.0-windows10.0.19041.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0-android35.0": {
+          "targetAlias": "net9.0-android",
+          "dependencies": {
+            "ARSoft.Tools.Net": {
+              "target": "Package",
+              "version": "[3.6.1, )"
+            },
+            "Microsoft.Extensions.Logging.Debug": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Maui.Controls": {
+              "target": "Package",
+              "version": "[9.0.14, )"
+            },
+            "Microsoft.NET.ILLink.Tasks": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.4, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.Android": {
+              "privateAssets": "all"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "E:\\repo\\dotnet-sdk-9.0.203-win-x64\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+        },
+        "net9.0-ios18.4": {
+          "targetAlias": "net9.0-ios",
+          "dependencies": {
+            "ARSoft.Tools.Net": {
+              "target": "Package",
+              "version": "[3.6.1, )"
+            },
+            "Microsoft.Extensions.Logging.Debug": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Maui.Controls": {
+              "target": "Package",
+              "version": "[9.0.14, )"
+            },
+            "Microsoft.NET.ILLink.Tasks": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.4, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.iOS": {
+              "privateAssets": "all"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "E:\\repo\\dotnet-sdk-9.0.203-win-x64\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+        },
+        "net9.0-maccatalyst18.4": {
+          "targetAlias": "net9.0-maccatalyst",
+          "dependencies": {
+            "ARSoft.Tools.Net": {
+              "target": "Package",
+              "version": "[3.6.1, )"
+            },
+            "Microsoft.Extensions.Logging.Debug": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Maui.Controls": {
+              "target": "Package",
+              "version": "[9.0.14, )"
+            },
+            "Microsoft.NET.ILLink.Tasks": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.4, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "xamarinios10",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.MacCatalyst": {
+              "privateAssets": "all"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "E:\\repo\\dotnet-sdk-9.0.203-win-x64\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+        },
+        "net9.0-windows10.0.19041": {
+          "targetAlias": "net9.0-windows10.0.19041.0",
+          "dependencies": {
+            "ARSoft.Tools.Net": {
+              "target": "Package",
+              "version": "[3.6.1, )"
+            },
+            "Microsoft.Extensions.Logging.Debug": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Maui.Controls": {
+              "target": "Package",
+              "version": "[9.0.14, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.Windows.SDK.NET.Ref",
+              "version": "[10.0.19041.57, 10.0.19041.57]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            },
+            "Microsoft.Windows.SDK.NET.Ref.Windows": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "E:\\repo\\dotnet-sdk-9.0.203-win-x64\\sdk\\9.0.203\\RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "android-arm64": {
+          "#import": []
+        },
+        "android-x64": {
+          "#import": []
+        },
+        "iossimulator-x64": {
+          "#import": []
+        },
+        "maccatalyst-x64": {
+          "#import": []
+        },
+        "win10-x64": {
+          "#import": []
+        }
+      }
+    }
+  }
+}

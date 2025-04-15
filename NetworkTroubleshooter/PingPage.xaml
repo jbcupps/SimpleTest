@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="NetworkTroubleshooter.PingPage"
+             Title="Ping Utility">
+    <VerticalStackLayout Padding="20" Spacing="10">
+        <Label 
+            Text="Ping Utility"
+            FontSize="Large" 
+            HorizontalOptions="Center" />
+
+        <Entry x:Name="HostnameEntry" Placeholder="Enter Hostname or IP" />
+        
+        <HorizontalStackLayout Spacing="10">
+            <Label Text="Pings:" VerticalOptions="Center"/>
+            <Entry x:Name="PingCountEntry" Text="4" Keyboard="Numeric" WidthRequest="50"/>
+            <Label Text="Timeout (ms):" VerticalOptions="Center"/>
+            <Entry x:Name="TimeoutEntry" Text="1000" Keyboard="Numeric" WidthRequest="70"/>
+        </HorizontalStackLayout>
+
+        <Button x:Name="PingButton" Text="Start Ping" Clicked="OnPingClicked" />
+
+        <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" />
+
+        <Label x:Name="StatusLabel" Text="" TextColor="Red" />
+
+        <ScrollView VerticalOptions="FillAndExpand">
+             <Editor x:Name="ResultsEditor" IsReadOnly="True" VerticalOptions="FillAndExpand" MinHeightRequest="200"/>
+        </ScrollView>
+        
+    </VerticalStackLayout>
+</ContentPage> 
