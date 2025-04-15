@@ -20,21 +20,15 @@ jobs:
         # *** IMPORTANT: Update this version if you switch SDKs (e.g., to '8.0.x') ***
         dotnet-version: '9.0.x' # Using .NET 9 SDK based on current setup
 
-    - name: Install MAUI Workload
-      run: dotnet workload install maui --ignore-failed-sources
+    - name: Install MAUI Windows Workload ONLY
+      # Install only the necessary windows workload to potentially speed up setup
+      run: dotnet workload install maui-windows --ignore-failed-sources
 
     - name: Restore Dependencies
-      # Use the full path if dotnet isn't in the system path on the runner
-      # run: E:\repo\dotnet-sdk-9.0.203-win-x64\dotnet.exe restore # Example if needed, usually setup-dotnet handles PATH
       run: dotnet restore ./NetworkTroubleshooter/NetworkTroubleshooter.csproj
-
-    # Build step is optional as publish includes it, but can be useful for catching errors earlier
-    # - name: Build Project
-    #   run: dotnet build ./NetworkTroubleshooter/NetworkTroubleshooter.csproj --configuration Release --no-restore
 
     - name: Publish for Windows x64
       # *** IMPORTANT: Verify the TargetFramework in NetworkTroubleshooter.csproj and update '-f' if needed ***
-      # Example: net8.0-windows10.0.19041.0 or net9.0-windows10.0.19041.0 etc.
       run: |
         $targetFramework = (Select-String -Path .\NetworkTroubleshooter\NetworkTroubleshooter.csproj -Pattern '<TargetFrameworks>.*net[\d\.]+-windows[\d\.\-]+.*</TargetFrameworks>' | Select-Object -First 1).Line -replace '<TargetFrameworks>.*(net[\d\.]+-windows[\d\.\-]+).*</TargetFrameworks>', '$1' -replace ';.*',''
         Write-Host "Detected Windows TargetFramework: $targetFramework"
@@ -52,52 +46,10 @@ jobs:
         name: NetworkTroubleshooter-win-x64
         path: ./NetworkTroubleshooter-win-x64.zip
 
-  build-macos:
-    name: Build for macOS x64
-    runs-on: macos-latest # Use a macOS runner
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v4
-      with:
-        # *** IMPORTANT: Update this version if you switch SDKs (e.g., to '8.0.x') ***
-        dotnet-version: '9.0.x' # Using .NET 9 SDK based on current setup
-
-    - name: Install MAUI Workload
-      run: dotnet workload install maui --ignore-failed-sources
-
-    - name: Restore Dependencies
-      run: dotnet restore ./NetworkTroubleshooter/NetworkTroubleshooter.csproj
-
-    # - name: Build Project
-    #   run: dotnet build ./NetworkTroubleshooter/NetworkTroubleshooter.csproj --configuration Release --no-restore
-
-    - name: Publish for macOS x64
-      # *** IMPORTANT: Verify the TargetFramework in NetworkTroubleshooter.csproj and update '-f' if needed ***
-      # Example: net8.0-maccatalyst or net9.0-maccatalyst etc.
-      run: |
-        target_framework=$(grep '<TargetFrameworks>.*net[0-9\.]\+-maccatalyst.*</TargetFrameworks>' NetworkTroubleshooter/NetworkTroubleshooter.csproj | sed -n 's/.*<TargetFrameworks>.*\(net[0-9\.]\+-maccatalyst\).*;*<\/TargetFrameworks>/\1/p' | head -n 1)
-        echo "Detected macOS TargetFramework: $target_framework"
-        if [ -z "$target_framework" ]; then echo "Could not detect macOS TargetFramework in csproj"; exit 1; fi
-        dotnet publish ./NetworkTroubleshooter/NetworkTroubleshooter.csproj -f $target_framework -c Release -r osx-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o ./publish/osx-x64/
-      shell: bash
-
-    - name: Archive macOS Artifact
-      run: ditto -c -k --sequesterRsrc --keepParent ./publish/osx-x64 ./NetworkTroubleshooter-osx-x64.zip
-
-    - name: Upload macOS Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: NetworkTroubleshooter-osx-x64
-        path: ./NetworkTroubleshooter-osx-x64.zip
-
   release:
     name: Create GitHub Release Assets
-    needs: [build-windows, build-macos] # Run after build jobs complete
-    runs-on: ubuntu-latest # Use Ubuntu for the release step
+    needs: [build-windows] # Only depends on the windows build now
+    runs-on: ubuntu-latest
 
     steps:
     - name: Download Windows Artifact
@@ -106,18 +58,10 @@ jobs:
         name: NetworkTroubleshooter-win-x64
         path: ./artifacts/win-x64
 
-    - name: Download macOS Artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: NetworkTroubleshooter-osx-x64
-        path: ./artifacts/osx-x64
-
     - name: Upload Artifacts to Release
       uses: softprops/action-gh-release@v2
       with:
-        # This uses the tag name and release notes from the release created on GitHub
         files: |
           ./artifacts/win-x64/NetworkTroubleshooter-win-x64.zip
-          ./artifacts/osx-x64/NetworkTroubleshooter-osx-x64.zip
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Required for authentication 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
