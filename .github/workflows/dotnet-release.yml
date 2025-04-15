@@ -28,12 +28,22 @@ jobs:
       run: dotnet restore ./NetworkTroubleshooter/NetworkTroubleshooter.csproj
 
     - name: Publish for Windows x64
-      # *** IMPORTANT: Verify the TargetFramework in NetworkTroubleshooter.csproj and update '-f' if needed ***
+      # *** IMPORTANT: Verify the TargetFramework pattern if needed ***
       run: |
-        $targetFramework = (Select-String -Path .\NetworkTroubleshooter\NetworkTroubleshooter.csproj -Pattern '<TargetFrameworks>.*net[\d\.]+-windows[\d\.\-]+.*</TargetFrameworks>' | Select-Object -First 1).Line -replace '<TargetFrameworks>.*(net[\d\.]+-windows[\d\.\-]+).*</TargetFrameworks>', '$1' -replace ';.*',''
+        $csprojPath = '.\NetworkTroubleshooter\NetworkTroubleshooter.csproj'
+        $csprojContent = Get-Content -Path $csprojPath -Raw
+        $windowsTfmPattern = 'net[\d\.]+-windows[\d\.\-]+'
+        
+        if ($csprojContent -match $windowsTfmPattern) {
+            $targetFramework = $matches[0]
+        } else {
+            $targetFramework = $null 
+        }
+        
         Write-Host "Detected Windows TargetFramework: $targetFramework"
-        if (-not $targetFramework) { throw "Could not detect Windows TargetFramework in csproj" }
-        dotnet publish .\NetworkTroubleshooter\NetworkTroubleshooter.csproj -f $targetFramework -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o ./publish/win-x64/
+        if (-not $targetFramework) { throw "Could not detect Windows TargetFramework in csproj file: $csprojPath" }
+        
+        dotnet publish $csprojPath -f $targetFramework -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o ./publish/win-x64/
       shell: pwsh
 
     - name: Archive Windows Artifact
