@@ -1,4 +1,4 @@
-name: .NET MAUI Build and Release
+name: Simple Network Tests
 
 on:
   release:
